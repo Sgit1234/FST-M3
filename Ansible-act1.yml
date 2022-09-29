@@ -1,0 +1,9 @@
+---
+- hosts: localhost
+  become: true
+  tasks:
+    - name: Create a user
+      user:
+        name: Sunitha
+        groups: wheel
+        append: true

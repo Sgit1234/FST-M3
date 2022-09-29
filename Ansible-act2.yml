@@ -1,0 +1,40 @@
+---
+- hosts: app
+  become: true
+  tasks:
+  #  - name: Upgrade all packages
+  #    dnf: 
+  #      name: "*"
+  #      state: latest 
+  - name: Install nginx and firewalld
+    dnf:
+      name: 
+        - nginx
+        - firewalld
+      state: present
+    notify:
+      - start nginx
+      - start firewalld
+  - name: Open port 80 on the firewall
+    firewalld:
+      port: 80/tcp
+      state: enabled
+      permanent: true  
+    notify: restart firewalld  
+  handlers: 
+    - name: start nginx
+      systemd:
+        name: nginx
+        state: started
+    - name: restart nginx
+      systemd:
+        name: nginx
+        state: restarted
+    - name: start firewalld
+      systemd:
+        name: firewalld
+        state: started
+    - name: restart firewalld
+      systemd:
+        name: firewalld
+        state: restarted
